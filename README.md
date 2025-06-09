@@ -54,7 +54,7 @@ A proposta combina simplicidade de jogabilidade com um elemento caótico e cômi
   * Indicação visual do volume captado (barra de intensidade de som) — ajuda o jogador a calibrar a força do grito.
   * Animações de pulo e colisão são fluídas, com uso de interpolação para representar melhor a física. <br>
 
-* ** Telas do Jogo:** <br>
+* **Telas do Jogo:** <br>
   * Menu Inicial: opções de iniciar, configurações, skins e créditos.
   * Tela de Pausa: opção de continuar, reiniciar ou sair.
   * Tela de Game Over: mostra pontuação atual, recorde e botão de jogar novamente.
