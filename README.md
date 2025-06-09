@@ -1,4 +1,4 @@
-# Documentação do Projeto: Chicken Scream em Python com Pygame
+# Documentação do Projeto: Screaming Chicken em Python com Pygame
 
 ## 1. Visão Geral
 **Tecnologia Utilizada:** Python + Pygame + sounddevice/pyaudio. <br>
@@ -10,34 +10,86 @@
 
 ## 2. Descrição do Projeto
 ### O que é Chicken Scream? <br>
-Jogo de ação onde uma galinha corre automaticamente e o jogador deve gritar ou emitir sons no microfone para fazê-la pular obstáculos. A intensidade do som afeta a altura do pulo.
+Screaming Chicken é um jogo de plataforma runner 2D em que o personagem principal, uma galinha estilizada, corre automaticamente por um cenário horizontal repleto de obstáculos gerados de forma procedural. A principal inovação está no controle por voz: o jogador deve utilizar o microfone para emitir sons — como gritos, assobios ou qualquer ruído — para fazer a galinha pular e evitar colisões. A intensidade (volume) do som captado define a altura do salto, criando uma experiência interativa incomum que mistura jogabilidade clássica com controle vocal experimental.
 
-### 2.1 Funcionalidades Principais
-* **Motor do Jogo:** <br>
-  * Movimento automático lateral da galinha.
-  * Geração procedural de obstáculos (cactos, cercas, pedras).
-  * Sistema de colisão e game over.
-  * Pontuação baseada em distância percorrida.
-  * Aumento progressivo de dificuldade. <br>
+A proposta combina simplicidade de jogabilidade com um elemento caótico e cômico, estimulando a curiosidade e o engajamento de jogadores casuais, streamers e públicos mais jovens.
 
-* **Controle por Áudio:**
-  * Captura de volume do microfone em tempo real.
-  * Mapeamento de intensidade sonora para altura do pulo.
-  * Filtro de ruído para evitar falsos positivos. <br>
+### 2.1 Funcionalidades Principais e Mecânicas de Jogo
+* **Movimentação e Progressão:** <br>
+  * A galinha se move automaticamente da esquerda para a direita em uma velocidade constante inicial.
+  * A velocidade do deslocamento aumenta de forma incremental conforme o tempo de sobrevivência, intensificando o desafio gradualmente (aceleração linear com fator de limite máximo).
+  * O cenário é infinito, mas usa técnicas de looping visual e geração randômica de terreno para parecer variado e dinâmico. <br>
 
-* **Interface:**
-  * Renderização 2D dos elementos do jogo.
-  * Telas de menu, game over e pausa.
-  * Exibição de pontuação e recorde.
-  * Feedback visual para pulos e colisões. <br>
+* **Obstáculos e Terreno:**
+  * Os obstáculos são posicionados com base em um algoritmo de geração procedural que considera distância mínima entre elementos, variedade visual e dificuldade crescente.
+  * Tipos de obstáculos:
+    * Cactos: altura média, exigem salto moderado.
+    * Cercas: mais baixas, surgem em sequência para dificultar múltiplos pulos.
+    * Pedras grandes: exigem pulos altos, surgem em velocidade mais avançada.
+  * Alguns obstáculos móveis poderão ser adicionados em modos alternativos (ex: corvos voando em altura variável). <br>
 
-* **Extras:**
-  * Efeitos sonoros temáticos.
-  * Múltiplas skins para a galinha.
-  * Sistema de achievements.
-  * Modos de jogo alternativos. <br>
+* **Controle por Voz - Mecânica Central:**
+  * A detecção do som é feita com sounddevice, utilizando análise em tempo real de amostras de áudio.
+  * Cada frame coleta uma janela de som e calcula o RMS (root mean square) ou volume médio.
+  * O volume é mapeado para altura de pulo com três zonas:
+    * Silêncio / Ruído baixo: a galinha não pula.
+    * Volume médio: pulo baixo (~altura padrão).
+    * Volume alto: pulo alto (~pulo estendido).
+  * Um filtro de ruído com threshold configurável evita ativações involuntárias causadas por ruídos ambientes. <br>
 
-### 2.2 Arquitetura do Código
+* **Sistema de Colisão e Game Over:**
+  * A colisão é detectada por bounding boxes entre a galinha e obstáculos.
+  * Ao colidir, o jogo entra no estado de Game Over, exibindo a pontuação, recorde e opção de reinício.
+  * A animação de colisão inclui som de impacto, desaceleração e queda da galinha. <br>
+
+  * **Pontuação e Progresso:**
+  * A pontuação é baseada na distância percorrida (tempo de sobrevivência).
+  * Recordes são armazenados localmente (com possibilidade futura de leaderboard online).
+  * Ao atingir marcos de distância, mensagens de incentivo podem ser exibidas (ex: "Você correu 500 metros!"). <br>
+
+
+### 2.2 Interfaces e Feedback Visual
+* **Tela de Jogo (HUD):** <br>
+  * Exibição constante da pontuação atual no canto superior esquerdo.
+  * Indicação visual do volume captado (barra de intensidade de som) — ajuda o jogador a calibrar a força do grito.
+  * Animações de pulo e colisão são fluídas, com uso de interpolação para representar melhor a física. <br>
+
+* ** Telas do Jogo:** <br>
+  * Menu Inicial: opções de iniciar, configurações, skins e créditos.
+  * Tela de Pausa: opção de continuar, reiniciar ou sair.
+  * Tela de Game Over: mostra pontuação atual, recorde e botão de jogar novamente.
+  * Tela de Configurações: ajusta sensibilidade de microfone, volume de som, dificuldade inicial, etc. <br>
+  
+
+### 2.3 Interfaces e Feedback Visual
+* **Movimentação e Progressão:** <br>
+  * A galinha se move automaticamente da esquerda para a direita em uma velocidade constante inicial.
+  * A velocidade do deslocamento aumenta de forma incremental conforme o tempo de sobrevivência, intensificando o desafio gradualmente (aceleração linear com fator de limite máximo).
+  * O cenário é infinito, mas usa técnicas de looping visual e geração randômica de terreno para parecer variado e dinâmico. <br>
+
+
+### 2.4 Interfaces e Feedback Visual
+* **Movimentação e Progressão:** <br>
+  * A galinha se move automaticamente da esquerda para a direita em uma velocidade constante inicial.
+  * A velocidade do deslocamento aumenta de forma incremental conforme o tempo de sobrevivência, intensificando o desafio gradualmente (aceleração linear com fator de limite máximo).
+  * O cenário é infinito, mas usa técnicas de looping visual e geração randômica de terreno para parecer variado e dinâmico. <br>
+
+
+### 2.5 Interfaces e Feedback Visual
+* **Movimentação e Progressão:** <br>
+  * A galinha se move automaticamente da esquerda para a direita em uma velocidade constante inicial.
+  * A velocidade do deslocamento aumenta de forma incremental conforme o tempo de sobrevivência, intensificando o desafio gradualmente (aceleração linear com fator de limite máximo).
+  * O cenário é infinito, mas usa técnicas de looping visual e geração randômica de terreno para parecer variado e dinâmico. <br>
+
+
+### 2.6 Interfaces e Feedback Visual
+* **Movimentação e Progressão:** <br>
+  * A galinha se move automaticamente da esquerda para a direita em uma velocidade constante inicial.
+  * A velocidade do deslocamento aumenta de forma incremental conforme o tempo de sobrevivência, intensificando o desafio gradualmente (aceleração linear com fator de limite máximo).
+  * O cenário é infinito, mas usa técnicas de looping visual e geração randômica de terreno para parecer variado e dinâmico. <br>
+
+  
+### 2.7 Arquitetura do Código
 chicken_scream/
 ├── main.py           	 	# Inicialização e loop principal
 ├── core/             		 # Lógica central
