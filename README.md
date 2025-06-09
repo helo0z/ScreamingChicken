@@ -9,7 +9,7 @@
 
 
 ## 2. Descrição do Projeto
-### O que é Chicken Scream? <br>
+### O que é Screaming Chicken? <br>
 Screaming Chicken é um jogo de plataforma runner 2D em que o personagem principal, uma galinha estilizada, corre automaticamente por um cenário horizontal repleto de obstáculos gerados de forma procedural. A principal inovação está no controle por voz: o jogador deve utilizar o microfone para emitir sons — como gritos, assobios ou qualquer ruído — para fazer a galinha pular e evitar colisões. A intensidade (volume) do som captado define a altura do salto, criando uma experiência interativa incomum que mistura jogabilidade clássica com controle vocal experimental.
 
 A proposta combina simplicidade de jogabilidade com um elemento caótico e cômico, estimulando a curiosidade e o engajamento de jogadores casuais, streamers e públicos mais jovens.
@@ -55,59 +55,60 @@ A proposta combina simplicidade de jogabilidade com um elemento caótico e cômi
   * Animações de pulo e colisão são fluídas, com uso de interpolação para representar melhor a física. <br>
 
 * **Telas do Jogo:** <br>
-  * Menu Inicial: opções de iniciar, configurações, skins e créditos.
-  * Tela de Pausa: opção de continuar, reiniciar ou sair.
-  * Tela de Game Over: mostra pontuação atual, recorde e botão de jogar novamente.
-  * Tela de Configurações: ajusta sensibilidade de microfone, volume de som, dificuldade inicial, etc. <br>
+  * **Menu Inicial:** opções de iniciar, configurações, skins e créditos.
+  * **Tela de Pausa:** opção de continuar, reiniciar ou sair.
+  * **Tela de Game Over:** mostra pontuação atual, recorde e botão de jogar novamente.
+  * **Tela de Configurações:** ajusta sensibilidade de microfone, volume de som, dificuldade inicial, etc.
+  * **Tela de Escolha de Personagem:** permite selecionar a skin da galinha antes de iniciar o jogo. <br>
   
 
-### 2.3 Interfaces e Feedback Visual
-* **Movimentação e Progressão:** <br>
-  * A galinha se move automaticamente da esquerda para a direita em uma velocidade constante inicial.
-  * A velocidade do deslocamento aumenta de forma incremental conforme o tempo de sobrevivência, intensificando o desafio gradualmente (aceleração linear com fator de limite máximo).
-  * O cenário é infinito, mas usa técnicas de looping visual e geração randômica de terreno para parecer variado e dinâmico. <br>
+### 2.3 Modos de Jogo Alternativos (Extras)
+* **Modo "Desafio":** <br>
+
+  * Obstáculos mais frequentes, menor espaço entre eles.
+  * Pontuação dobrada.  
+  * Tempo limitado por fase (ex: 30 segundos por fase com obstáculos customizados). <br>
 
 
-### 2.4 Interfaces e Feedback Visual
-* **Movimentação e Progressão:** <br>
-  * A galinha se move automaticamente da esquerda para a direita em uma velocidade constante inicial.
-  * A velocidade do deslocamento aumenta de forma incremental conforme o tempo de sobrevivência, intensificando o desafio gradualmente (aceleração linear com fator de limite máximo).
-  * O cenário é infinito, mas usa técnicas de looping visual e geração randômica de terreno para parecer variado e dinâmico. <br>
+### 2.4 Sistema de Skins e Recompensas
+  * Desbloqueio de skins visuais para a galinha com base em achievements (ex: correr 1000 metros, sobreviver 3 minutos, etc.).
+  * Cada skin tem apenas efeito estético, sem impacto na jogabilidade.
+  * Skin especial desbloqueável via Easter Egg: Galinha Ninja (detalhado na seção 4.2). <br>
 
 
-### 2.5 Interfaces e Feedback Visual
-* **Movimentação e Progressão:** <br>
-  * A galinha se move automaticamente da esquerda para a direita em uma velocidade constante inicial.
-  * A velocidade do deslocamento aumenta de forma incremental conforme o tempo de sobrevivência, intensificando o desafio gradualmente (aceleração linear com fator de limite máximo).
-  * O cenário é infinito, mas usa técnicas de looping visual e geração randômica de terreno para parecer variado e dinâmico. <br>
+### 2.5 Aspectos de Design e Sonoplastia
+  * Trilha sonora leve e cômica, com loops curtos que não sobrecarregam a voz do jogador.
+  * Efeitos sonoros únicos para cada tipo de obstáculo (ex: barulho de cerca quebrando).
+  * Feedbacks auditivos positivos ao atingir marcos importantes (ex: voz da galinha comemorando).
+  * Visuais cartunescos e vibrantes, com animações exageradas para reforçar a comicidade da mecânica de voz. <br>
 
 
-### 2.6 Interfaces e Feedback Visual
-* **Movimentação e Progressão:** <br>
-  * A galinha se move automaticamente da esquerda para a direita em uma velocidade constante inicial.
-  * A velocidade do deslocamento aumenta de forma incremental conforme o tempo de sobrevivência, intensificando o desafio gradualmente (aceleração linear com fator de limite máximo).
-  * O cenário é infinito, mas usa técnicas de looping visual e geração randômica de terreno para parecer variado e dinâmico. <br>
+### 2.6 Mecânica de Dificuldade Progressiva
+  * Aumento linear de velocidade a cada 15 segundos.
+  * A cada 100 metros, chance de obstáculos duplos aumenta.
+  * Após certo tempo (ex: 60 segundos), obstáculos móveis começam a aparecer. <br>
 
   
 ### 2.7 Arquitetura do Código
-chicken_scream/
-├── main.py           	 	# Inicialização e loop principal
-├── core/             		 # Lógica central
-│   ├── game.py        	# Gerenciador de estado do jogo
-│   ├── player.py      	# Comportamento da galinha
-│   └── obstacles.py   	# Geração de obstáculos
-├── audio/             		# Sistema de áudio
-│   ├── input.py       	# Captura do microfone
-│   └── effects.py     	# Efeitos sonoros
-├── ui/                		# Interface
-│   ├── renderer.py    	# Renderização gráfica
-│   ├── screens.py     	# Telas do jogo
-│   └── hud.py         	# Elementos de HUD
-└── utils/             		# Utilitários
-    ├── config.py      	# Configurações
-    ├── score.py       	# Gerenciamento de pontuações
-    └── assets.py      	# Carregamento de recursos
-
+```
+screaming_chicken/
+├── main.py              # Inicialização e loop principal
+├── core/                # Lógica central
+│   ├── game.py          # Gerenciador de estado do jogo
+│   ├── player.py        # Comportamento da galinha
+│   └── obstaculos.py    # Geração de obstáculos
+├── audio/               # Sistema de áudio
+│   ├── input.py         # Captura do microfone
+│   └── effect.py        # Efeitos sonoros
+├── ui/                  # Interface
+│   ├── renderer.py      # Renderização gráfica
+│   ├── screens.py       # Telas do jogo
+│   └── hud.py           # Elementos de HUD
+└── utils/               # Utilitários
+    ├── config.py        # Configurações
+    ├── score.py         # Gerenciamento de pontuações
+    └── assets.py        # Carregamento de recursos
+```
 
 
 ## 3. Etapas de Entrega
@@ -139,30 +140,34 @@ chicken_scream/
 * Documentação final.
 * Empacotamento para distribuição.
 
+
 ## 4. Requisitos Técnicos
 ### 4.1 Dependências
-Python <br>
-Copy <br>
-Download <br>
+Python 3.10+<br>
 pygame==2.5.2 <br>
 sounddevice==0.4.6 <br>
 numpy==1.26.0 <br>
 
+**Instalação recomendada:**
+```
+bash
+pip install pygame==2.5.2 sounddevice==0.4.6 numpy==1.26.0
+```
+
+
 ### 4.2 Easter Egg: Galinha Ninja
 **Como ativar:**
-1. Pular no mínimo 7 vezes consecutivas sem colidir
-2. No 7º pulo, clicar com o botão direito do mouse
+  1. Pular no mínimo 7 vezes consecutivas sem colidir
+  2. No 7º pulo, clicar com o botão direito do mouse <br>
 
 **Efeito:**
 Transformação visual em galinha ninja
 Invulnerabilidade temporária (5 segundos)
-Efeitos sonoros especiais
-
+Efeitos sonoros especiais. <br>
 **Implementação:**
-python
-Copy
-Download <br>
+Python <br>
 
+```
 class Player:
     def __init__(self):
         self.consecutive_jumps = 0
@@ -179,9 +184,20 @@ class Player:
     def activate_ninja_mode(self):
         # Implementação dos efeitos especiais
         pass
+```
 
 
+### 4.3 Testes e Validação
+  * Testes com microfones de diferentes qualidades.
+  * Avaliação de falsos positivos com ruído ambiente.
+  * Medição de tempo de resposta entre som e pulo. <br>
 
+### 4.4 Desafios Técnicos
+  * Latência na detecção de áudio em alguns sistemas.
+  * Otimização do consumo de CPU com Pygame + stream de som.
+  * Equilíbrio entre sensibilidade e ruído ambiente. <br>
+
+  
 ## 5. Considerações Finais
 O projeto será desenvolvido de forma iterativa, com testes constantes para garantir uma experiência de jogo estável, fluida e divertida. A introdução do Ovo de Páscoa traz um toque de surpresa, incentivando a curiosidade e a exploração por parte do jogador.
 Este documento será atualizado conforme o avanço do desenvolvimento, refletindo eventuais ajustes, melhorias e decisões tomadas ao longo do processo.
