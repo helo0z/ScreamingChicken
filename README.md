@@ -42,7 +42,7 @@ A proposta combina simplicidade de jogabilidade com um elemento caótico e cômi
   * Ao colidir, o jogo entra no estado de Game Over, exibindo a pontuação, recorde e opção de reinício.
   * A animação de colisão inclui som de impacto, desaceleração e queda da galinha. <br>
 
-  * **Pontuação e Progresso:**
+* **Pontuação e Progresso:**
   * A pontuação é baseada na distância percorrida (tempo de sobrevivência).
   * Recordes são armazenados localmente (com possibilidade futura de leaderboard online).
   * Ao atingir marcos de distância, mensagens de incentivo podem ser exibidas (ex: "Você correu 500 metros!"). <br>
