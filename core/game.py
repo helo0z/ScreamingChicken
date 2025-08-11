@@ -20,12 +20,10 @@ HIGHLIGHT = (255, 255, 0)  # amarelo para destacar os botões
 pygame.init()
 
 # Caminho do ícone (volta uma pasta e acessa teste.png)
-icon_path = os.path.join(os.path.dirname(__file__), "..", "teste.png")
-
+icon_path = os.path.join(os.path.dirname(__file__), "..", "imagens", "chickenjanela.png")
 icon = pygame.image.load(icon_path)
 pygame.display.set_icon(icon)
 pygame.display.set_caption("Screaming Chicken")
-
 
 # Fonte usada nos botões: Comic Sans MS, tamanho 48, itálico e negrito
 FONT_BUTTON = pygame.font.SysFont("comicsansms", 48, italic=True, bold=True)
@@ -34,7 +32,7 @@ FONT_BUTTON = pygame.font.SysFont("comicsansms", 48, italic=True, bold=True)
 tela = pygame.display.set_mode((largura, altura))
 
 # Carrega a imagem de fundo do menu e ajusta para o tamanho da janela
-caminho_fundo = os.path.join(os.path.dirname(__file__), "menu.jpeg")
+caminho_fundo = os.path.join(os.path.dirname(__file__), "..", "imagens", "menu.jpeg")
 fundo_original = pygame.image.load(caminho_fundo)
 fundo = pygame.transform.scale(fundo_original, (largura, altura))
 
