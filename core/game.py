@@ -19,10 +19,13 @@ HIGHLIGHT = (255, 255, 0)  # amarelo para destacar os botões
 # Inicializa todos os módulos do pygame (exceto mixer que será inicializado no menu)
 pygame.init()
 
-# Carrega e configura o ícone da janela
-icon = pygame.image.load("chicken.jpeg")
+# Caminho do ícone (volta uma pasta e acessa teste.png)
+icon_path = os.path.join(os.path.dirname(__file__), "..", "teste.png")
+
+icon = pygame.image.load(icon_path)
 pygame.display.set_icon(icon)
-pygame.display.set_caption("Screaming Chicken")  # título da janela
+pygame.display.set_caption("Screaming Chicken")
+
 
 # Fonte usada nos botões: Comic Sans MS, tamanho 48, itálico e negrito
 FONT_BUTTON = pygame.font.SysFont("comicsansms", 48, italic=True, bold=True)
