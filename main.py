@@ -4,6 +4,7 @@ from sys import exit
 import os
 from random import randrange, randint
 import math
+#comentario
 
 pygame.init()
 pygame.mixer.init()
