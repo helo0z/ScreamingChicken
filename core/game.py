@@ -44,7 +44,7 @@ class Button:
         self.text = text                  # texto exibido no botão
         self.callback = callback          # função chamada ao clicar no botão
         self.default_color = WHITE        # cor padrão do texto
-        self.highlight_color = HIGHLIGHT # cor quando mouse está em cima
+        self.highlight_color = HIGHLIGHT  # cor quando mouse está em cima
         self.font = FONT_BUTTON           # fonte usada
         self.label = self.font.render(self.text, True, self.default_color)
         self.rect = self.label.get_rect(center=pos)  # retângulo para detectar clique e posição
