@@ -49,7 +49,7 @@ fundo = pygame.transform.scale(fundo_original, (largura, altura))  # escala a im
 
 # ===== Carregar e tocar música de fundo em loop =====
 pygame.mixer.music.load(caminho_musica)
-pygame.mixer.music.set_volume(0.024)  # volume entre 0 e 1
+pygame.mixer.music.set_volume(0.050)  # volume entre 0 e 1
 pygame.mixer.music.play(-1)  # loop infinito
 
 # ===== Sprite da Galinha =====
@@ -131,7 +131,7 @@ class Piso(pygame.sprite.Sprite):
 sprite_sheet_arbusto = pygame.image.load(os.path.join(diretorio_imagens, "arbusto.png")).convert_alpha()
 
 class Arbusto(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, indice: int):
         pygame.sprite.Sprite.__init__(self)
         self.imagens_arbusto = []
         for i in range(9):
@@ -139,19 +139,15 @@ class Arbusto(pygame.sprite.Sprite):
             img = pygame.transform.scale(img, (64, 64))  # aumenta o tamanho
             self.imagens_arbusto.append(img)
         
-        self.index_lista = 0
+        self.index_lista = 2
         self.image = self.imagens_arbusto[self.index_lista]
         self.rect = self.image.get_rect()
-        self.rect.center = (largura - 100, altura - 129)  # já começa visível
+        self.bottom = altura - 129
+        self.right = largura
 
     def update(self):
-        if self.index_lista > 8:  # já que temos 9 frames
-            self.index_lista = 0
-        self.index_lista += 0.25
-        self.image = self.imagens_arbusto[int(self.index_lista)]
-
-        if self.rect.topright[0] < 0:
-            self.rect.x = largura
+        if self.rect.right < 0:
+            self.rect.right = largura
         self.rect.x -= 10
 
         
@@ -172,7 +168,8 @@ for i in range(num_pisos):
     piso = Piso(i)
     todas_as_sprites.add(piso)
 
-arbusto = Arbusto()
+indice = randint(0, 2)
+arbusto = Arbusto(indice)
 todas_as_sprites.add(arbusto)
 
 # ===== Loop Principal =====
