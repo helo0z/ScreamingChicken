@@ -49,7 +49,7 @@ fundo = pygame.transform.scale(fundo_original, (largura, altura))  # escala a im
 
 # ===== Carregar e tocar música de fundo em loop =====
 pygame.mixer.music.load(caminho_musica)
-pygame.mixer.music.set_volume(0.050)  # volume entre 0 e 1
+pygame.mixer.music.set_volume(1)  # volume entre 0 e 1
 pygame.mixer.music.play(-1)  # loop infinito
 
 # ===== Sprite da Galinha =====
