@@ -4,7 +4,7 @@ from sys import exit
 import os
 from random import randrange, randint
 import math
-#comentario
+
 
 pygame.init()
 pygame.mixer.init()
@@ -53,7 +53,16 @@ pygame.mixer.music.set_volume(0.20)  # volume entre 0 e 1
 pygame.mixer.music.play(-1)  # loop infinito
 
 # ===== Sprite da Galinha =====
-sprite_sheet = pygame.image.load(os.path.join(diretorio_imagens, "chicken.png")).convert_alpha()
+frames = [
+    pygame.image.load(
+        os.path.join(diretorio_imagens, f"galinha{i}.png")
+    ).convert_alpha()
+    for i in range(1, 6)
+]
+
+# agora adiciona a parte decrescente (do 4 ao 2)
+sprite_sheet = frames + frames[-2:0:-1]
+
 
 class Galinha(pygame.sprite.Sprite):
     """Classe que representa a galinha animada."""
@@ -62,15 +71,14 @@ class Galinha(pygame.sprite.Sprite):
         self.som_pulo = pygame.mixer.Sound(os.path.join(diretorio_sons, "pulo.mp3"))
         self.som_pulo.set_volume(1)
         self.imagens_galinha = []
-        for i in range(4): # Recorta os frames do sprite e aumenta o tamanho da galinha
-            img = sprite_sheet.subsurface((i * 64, 0), (64, 64))
-            img = pygame.transform.scale(img, (64*3, 64*3))
+        for img in sprite_sheet:
+            img = pygame.transform.scale(img, (64*2, 64*2.5))
             self.imagens_galinha.append(img)
         
         self.index_lista = 0
         self.image = self.imagens_galinha[self.index_lista]
         self.rect = self.image.get_rect() #retangulo ao redor do objeto (galinha)
-        self.pos_y_inicial = altura - 129 - 192//2
+        self.pos_y_inicial = altura - 125 - 192//2
         self.rect.center = (200, altura - 129)  # posição inicial da galinha (já acima do piso)
         self.pulo = False  # controle de pulo
 
@@ -91,10 +99,12 @@ class Galinha(pygame.sprite.Sprite):
             else:
                 self.rect.y = self.pos_y_inicial
 
-        if self.index_lista > 3: # 3 é o último índice da lista de imagens_galinha
+        self.index_lista += 0.25
+        indice = int(self.index_lista)
+        if indice >= len(self.imagens_galinha):
+            indice = 0
             self.index_lista = 0
-        self.index_lista += 0.25  # controla a velocidade da animação
-        self.image = self.imagens_galinha[int(self.index_lista)]
+        self.image = self.imagens_galinha[indice]
 
 
 class Nuvens(pygame.sprite.Sprite):
