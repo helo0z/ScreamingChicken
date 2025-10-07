@@ -4,7 +4,7 @@ from sys import exit
 import os
 from random import randrange, randint
 import math
-
+from datetime import datetime
 
 pygame.init()
 pygame.mixer.init()
@@ -46,10 +46,10 @@ tela = pygame.display.set_mode((largura, altura))
 caminho_fundo = os.path.join(diretorio_imagens, "FundoUm.jpeg")
 fundo_original = pygame.image.load(caminho_fundo)
 fundo = pygame.transform.scale(fundo_original, (largura, altura))  # escala a imagem do fundo uma única vez
-
+img_fundo = 1 
 # ===== Carregar e tocar música de fundo em loop =====
 pygame.mixer.music.load(caminho_musica)
-pygame.mixer.music.set_volume(0.20)  # volume entre 0 e 1
+pygame.mixer.music.set_volume(1)  # volume entre 0 e 1
 pygame.mixer.music.play(-1)  # loop infinito
 
 # ===== Sprite da Galinha =====
@@ -60,7 +60,7 @@ frames = [
     for i in range(1, 6)
 ]
 
-# agora adiciona a parte decrescente (do 4 ao 2)
+# adiciona a parte decrescente (do 4 ao 2)
 sprite_sheet = frames + frames[-2:0:-1]
 
 
@@ -99,7 +99,7 @@ class Galinha(pygame.sprite.Sprite):
             else:
                 self.rect.y = self.pos_y_inicial
 
-        self.index_lista += 0.25
+        self.index_lista += 0.37
         indice = int(self.index_lista)
         if indice >= len(self.imagens_galinha):
             indice = 0
@@ -162,44 +162,80 @@ class Arbusto(pygame.sprite.Sprite):
 
         
 # ===== Grupo de sprites =====
-todas_as_sprites = pygame.sprite.Group()
 
-galinha = Galinha()
-todas_as_sprites.add(galinha)
-
-for i in range(4):
-    nuvem = Nuvens()  
-    todas_as_sprites.add(nuvem)  
-
-largura_piso = 150
-num_pisos = math.ceil(largura * 2 / largura_piso)  # garante que preencha toda a largura
-
-for i in range(num_pisos):
-    piso = Piso(i)
-    todas_as_sprites.add(piso)
-
-indice = randint(0, 2)
-arbusto = Arbusto(indice)
-todas_as_sprites.add(arbusto)
 
 # ===== Loop Principal =====
-relogio = pygame.time.Clock()  
-while True:
-    relogio.tick(30)  # limita a 30 FPS
-    tela.blit(fundo, (0, 0))
+def main():
+    caminho_musica = os.path.join(base_path, "audio", "FaseUm.mp3")
+    pygame.mixer.music.load(caminho_musica)
+    pygame.mixer.music.set_volume(1)  # volume entre 0 e 1
+    pygame.mixer.music.play(-1)  # loop infinito
 
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            exit()
-        if event.type == KEYDOWN:
-            if event.key == K_SPACE:
-                if galinha.rect.y != galinha.pos_y_inicial:
-                    pass
-                else:
-                    galinha.pular()
+    caminho_fundo = os.path.join(diretorio_imagens, "FundoUm.jpeg")
+    fundo_original = pygame.image.load(caminho_fundo)
+    fundo = pygame.transform.scale(fundo_original, (largura, altura))  # escala a imagem do fundo uma única vez
+    img_fundo = 1 
+    todas_as_sprites = pygame.sprite.Group()
 
-    todas_as_sprites.update()
-    todas_as_sprites.draw(tela)
+    galinha = Galinha()
+    todas_as_sprites.add(galinha)
 
-    pygame.display.flip()
+    for i in range(4):
+        nuvem = Nuvens()  
+        todas_as_sprites.add(nuvem)  
+
+    largura_piso = 150
+    num_pisos = math.ceil(largura * 2 / largura_piso)  # garante que preencha toda a largura
+
+    for i in range(num_pisos):
+        piso = Piso(i)
+        todas_as_sprites.add(piso)
+
+    indice = randint(0, 2)
+    arbusto = Arbusto(indice)
+    todas_as_sprites.add(arbusto)
+    relogio = pygame.time.Clock()  
+    inicio = datetime.now()
+    while True:
+        relogio.tick(30)  # limita a 30 FPS
+        tela.blit(fundo, (0, 0))
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                exit()
+            if event.type == KEYDOWN:
+                if event.key == K_SPACE:
+                    if galinha.rect.y != galinha.pos_y_inicial:
+                        pass
+                    else:
+                        galinha.pular()
+        
+
+        todas_as_sprites.update()
+        todas_as_sprites.draw(tela)
+        fim = datetime.now()
+        tempo_passado = (fim - inicio).seconds
+        if tempo_passado >= 3:
+            if img_fundo == 1:
+                img_fundo = 2
+                caminho_fundo = os.path.join(diretorio_imagens, "FundoDois.jpeg")
+                fundo_original = pygame.image.load(caminho_fundo)
+                fundo = pygame.transform.scale(fundo_original, (largura, altura))  # escala a imagem do fundo uma única vez
+                inicio = datetime.now()  # reinicia o timer
+            elif img_fundo == 2:
+                img_fundo = 3
+                caminho_fundo = os.path.join(diretorio_imagens, "FundoTres.jpeg")
+                fundo_original = pygame.image.load(caminho_fundo)
+                fundo = pygame.transform.scale(fundo_original, (largura, altura))  # escala a imagem do fundo uma única vez
+                inicio = datetime.now()  # reinicia o timer
+            else:
+                img_fundo = 1
+                caminho_fundo = os.path.join(diretorio_imagens, "FundoUm.jpeg")
+                fundo_original = pygame.image.load(caminho_fundo)
+                fundo = pygame.transform.scale(fundo_original, (largura, altura))  # escala a imagem do fundo uma única vez
+                inicio = datetime.now()  # reinicia o timer
+        
+
+
+        pygame.display.flip()

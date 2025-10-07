@@ -1,7 +1,7 @@
 import pygame
 import sys
 import os
-
+from main import main
 # --------- Configurações ---------
 largura = 1280         # largura da janela do jogo
 altura = 720           # altura da janela do jogo
@@ -9,7 +9,7 @@ FPS = 60               # frames por segundo (velocidade do loop)
 
 # Caminho da música (está uma pasta acima, dentro da pasta 'audio')
 base_path = os.path.dirname(os.path.abspath(__file__))
-caminho_musica = os.path.join(base_path, "..", "audio", "lobby.mp3")
+caminho_musica = os.path.join(base_path, "audio", "lobby.mp3")
 
 # Cores usadas no jogo
 WHITE = (255, 255, 255)
@@ -20,7 +20,7 @@ HIGHLIGHT = (255, 255, 0)  # amarelo para destacar os botões
 pygame.init()
 
 # Caminho do ícone (volta uma pasta e acessa teste.png)
-icon_path = os.path.join(os.path.dirname(__file__), "..", "imagens", "chickenjanela.png")
+icon_path = os.path.join(os.path.dirname(__file__),  "imagens", "chickenjanela.png")
 icon = pygame.image.load(icon_path)
 pygame.display.set_icon(icon)
 pygame.display.set_caption("Screaming Chicken")
@@ -32,7 +32,7 @@ FONT_BUTTON = pygame.font.SysFont("comicsansms", 48, italic=True, bold=True)
 tela = pygame.display.set_mode((largura, altura))
 
 # Carrega a imagem de fundo do menu e ajusta para o tamanho da janela
-caminho_fundo = os.path.join(os.path.dirname(__file__), "..", "imagens", "menu.jpeg")
+caminho_fundo = os.path.join(os.path.dirname(__file__), "imagens", "menu.jpeg")
 fundo_original = pygame.image.load(caminho_fundo)
 fundo = pygame.transform.scale(fundo_original, (largura, altura))
 
@@ -177,7 +177,7 @@ class Game:
         self.game_loop()
 
     def game_loop(self):
-        clock = pygame.time.Clock()
+       ''' clock = pygame.time.Clock()
         running = True
 
         while running:
@@ -193,9 +193,10 @@ class Game:
             pygame.display.flip()
             clock.tick(FPS)
 
-        pygame.quit()
+        pygame.quit()'''
+       main()
+       
 
 
 if __name__ == "__main__":
     Game().run()
-    

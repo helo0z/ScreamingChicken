@@ -91,23 +91,24 @@ A proposta combina simplicidade de jogabilidade com um elemento caótico e cômi
   
 ### 2.7 Arquitetura do Código
 ```
-screaming_chicken/
-├── main.py              # Inicialização e loop principal
-├── core/                # Lógica central
-│   ├── game.py          # Gerenciador de estado do jogo
-│   ├── player.py        # Comportamento da galinha
-│   └── obstaculos.py    # Geração de obstáculos
-├── audio/               # Sistema de áudio
-│   ├── input.py         # Captura do microfone
-│   └── effect.py        # Efeitos sonoros
-├── ui/                  # Interface
-│   ├── renderer.py      # Renderização gráfica
-│   ├── screens.py       # Telas do jogo
-│   └── hud.py           # Elementos de HUD
-└── utils/               # Utilitários
-    ├── config.py        # Configurações
-    ├── score.py         # Gerenciamento de pontuações
-    └── assets.py        # Carregamento de recursos
+ScreamingChicken-main/
+├── audio/                # Áudios do jogo
+│   ├── FaseUm.mp3
+│   ├── lobby.mp3
+│   └── pulo.mp3
+├── core/
+│   └── game.py           # Ponto de entrada do jogo
+├── imagens/              # Sprites e fundos
+│   ├── arbusto.png
+│   ├── chicken.png
+│   ├── chickenjanela.png
+│   ├── FundoUm.jpeg
+│   ├── menu.jpeg
+│   ├── nuvem.png
+│   └── piso.jpg
+├── main.py               # Lógica principal do jogo
+└── README.md
+
 ```
 
 
