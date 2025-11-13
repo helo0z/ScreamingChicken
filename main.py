@@ -18,7 +18,7 @@ diretorio_sons = os.path.join(diretorio_principal, "audio")        # Pasta dos s
 largura = 1280   # largura da janela do jogo
 altura = 720     # altura da janela do jogo
 
-# Caminho da música (uma pasta acima, dentro da pasta 'audio')
+# ===== Caminho da música (uma pasta acima, dentro da pasta 'audio') =====
 base_path = os.path.dirname(os.path.abspath(__file__))
 caminho_musica = os.path.join(base_path, "audio", "FaseUm.mp3")
 
@@ -79,7 +79,7 @@ class Galinha(pygame.sprite.Sprite):
         self.image = self.imagens_galinha[self.index_lista]
         self.rect = self.image.get_rect() #retangulo ao redor do objeto (galinha)
         self.pos_y_inicial = altura - 125 - 192//2
-        self.rect.center = (200, altura - 129)  # posição inicial da galinha (já acima do piso)
+        self.rect.center = (200, altura - 40)  # posição inicial da galinha (já acima do piso)
         self.pulo = False  # controle de pulo
 
     def pular(self):
@@ -122,15 +122,14 @@ class Nuvens(pygame.sprite.Sprite):
             self.rect.y = randrange(10, 140, 10)
         self.rect.x -= 7
 
-
 class Piso(pygame.sprite.Sprite):
     def __init__(self, pos_x):
         pygame.sprite.Sprite.__init__(self)
-        imagem_original = pygame.image.load(os.path.join(diretorio_imagens, "piso.jpg")).convert_alpha()
-        self.image = pygame.transform.scale(imagem_original, (150, 90))
+        imagem_original = pygame.image.load(os.path.join(diretorio_imagens, "piso.png")).convert_alpha()
+        self.image = pygame.transform.scale(imagem_original, (100, 150))
         self.rect = self.image.get_rect()  
-        self.rect.y = altura - 64
-        self.rect.x = pos_x * 150
+        self.rect.y = altura - 150
+        self.rect.x = pos_x * 80
 
     def update(self):
         if self.rect.topright[0] < 0: 
@@ -138,30 +137,34 @@ class Piso(pygame.sprite.Sprite):
         self.rect.x -= 10
 
 
-sprite_sheet_arbusto = pygame.image.load(os.path.join(diretorio_imagens, "arbusto.png")).convert_alpha()
+sprite_sheet_obstaculos = pygame.image.load(os.path.join(diretorio_imagens, "arbusto.png")).convert_alpha()
 
-class Arbusto(pygame.sprite.Sprite):
+class Obstaculos(pygame.sprite.Sprite):
     def __init__(self, indice: int):
         pygame.sprite.Sprite.__init__(self)
-        self.imagens_arbusto = []
-        for i in range(9):
-            img = sprite_sheet_arbusto.subsurface((i * 16, 0), (16, 16))
-            img = pygame.transform.scale(img, (64, 64))  # aumenta o tamanho
-            self.imagens_arbusto.append(img)
-        
-        self.index_lista = 2
-        self.image = self.imagens_arbusto[self.index_lista]
+
+        # Lista de imagens possíveis para os obstáculos
+        self.imagens_obstaculos = [
+            pygame.image.load(os.path.join(diretorio_imagens, "arbusto.png")).convert_alpha(),
+            pygame.image.load(os.path.join(diretorio_imagens, "cerca.png")).convert_alpha(),
+            pygame.image.load(os.path.join(diretorio_imagens, "espantalho.png")).convert_alpha()
+        ]
+
+        # Escolhe uma imagem pelo índice (ou aleatoriamente)
+        self.image = pygame.transform.scale(self.imagens_obstaculos[indice], (170, 160))
         self.rect = self.image.get_rect()
-        self.bottom = altura - 129
-        self.right = largura
+
+        # Define posição inicial (direita da tela)
+        self.rect.bottom = altura - 15  # altura do chão
+        self.rect.x = largura + randint(200, 800)  # aparece fora da tela
 
     def update(self):
-        if self.rect.right < 0:
-            self.rect.right = largura
+        """Movimenta o obstáculo e o reposiciona ao sair da tela."""
         self.rect.x -= 10
+        if self.rect.right < 0:
+            self.rect.x = largura + randint(500, 900)
+            self.rect.bottom = altura - 16
 
-        
-# ===== Grupo de sprites =====
 
 
 # ===== Loop Principal =====
@@ -191,9 +194,23 @@ def main():
         piso = Piso(i)
         todas_as_sprites.add(piso)
 
-    indice = randint(0, 2)
-    arbusto = Arbusto(indice)
-    todas_as_sprites.add(arbusto)
+    obstaculos = pygame.sprite.Group()
+    posicoes_usadas = []
+
+    for i in range(3):
+        indice = randint(0, 2)
+        obst = Obstaculos(indice)
+        # Garante que cada obstáculo comece mais à frente que o anterior
+        if i == 0:
+            obst.rect.x = largura + randint(300, 600)
+        else:
+            obst.rect.x = posicoes_usadas[-1] + randint(400, 700)  # espaço variável entre obstáculos
+
+        obstaculos.add(obst)
+        todas_as_sprites.add(obst)
+        posicoes_usadas.append(obst.rect.x)
+
+
     relogio = pygame.time.Clock()  
     inicio = datetime.now()
     while True:
@@ -235,7 +252,5 @@ def main():
                 fundo_original = pygame.image.load(caminho_fundo)
                 fundo = pygame.transform.scale(fundo_original, (largura, altura))  # escala a imagem do fundo uma única vez
                 inicio = datetime.now()  # reinicia o timer
-        
-
-
+                
         pygame.display.flip()
