@@ -39,7 +39,7 @@ class Galinha(pygame.sprite.Sprite):
             print("Aviso: Som de pulo não encontrado.")
             self.som_pulo = None
         
-        # --- Carregamento de Imagens (Dentro da classe para evitar erros) ---
+        # --- Carregamento de Imagens ---
         self.imagens_galinha = []
         
         try:
@@ -55,12 +55,12 @@ class Galinha(pygame.sprite.Sprite):
 
             # Escala as imagens
             for img in sprite_sheet:
+                # Ajustado para manter a proporção original que você definiu
                 img_redim = pygame.transform.scale(img, (64*2, 64*2.5))
                 self.imagens_galinha.append(img_redim)
 
         except Exception as e:
             print(f"ERRO CRÍTICO: Não foi possível carregar a galinha. Detalhes: {e}")
-            # Se der erro, cria um quadrado vermelho para você ver onde ela está
             surf = pygame.Surface((100, 100))
             surf.fill(VERMELHO_ERRO)
             self.imagens_galinha.append(surf)
@@ -70,9 +70,12 @@ class Galinha(pygame.sprite.Sprite):
         self.image = self.imagens_galinha[self.index_lista]
         self.rect = self.image.get_rect()
         
-        self.pos_y_inicial = altura - 125 - 192//2
-        self.rect.center = (200, altura - 40)
+        # Ajuste fino da posição Y para tocar o chão corretamente
+        self.pos_y_inicial = altura - 102 - (64*2.5) + 40
+        self.rect.center = (200, self.pos_y_inicial)
+        
         self.pulo = False
+        self.mask = pygame.mask.from_surface(self.image)
 
     def pular(self):
         self.pulo = True
@@ -82,7 +85,7 @@ class Galinha(pygame.sprite.Sprite):
     def update(self):
         # Lógica do Pulo
         if self.pulo:
-            if self.rect.y <= 300:
+            if self.rect.y <= 250: # Altura do pulo
                 self.pulo = False
             self.rect.y -= 20
         else:
@@ -92,12 +95,13 @@ class Galinha(pygame.sprite.Sprite):
                 self.rect.y = self.pos_y_inicial
 
         # Lógica da Animação
-        self.index_lista += 0.37
+        self.index_lista += 0.35 # Velocidade da batida de asas
         indice = int(self.index_lista)
         if indice >= len(self.imagens_galinha):
             indice = 0
             self.index_lista = 0
         self.image = self.imagens_galinha[indice]
+        self.mask = pygame.mask.from_surface(self.image)
 
 
 class Nuvens(pygame.sprite.Sprite):
@@ -158,18 +162,18 @@ class Obstaculos(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.bottom = altura - 15
         self.rect.x = largura + randint(200, 800)
+        self.mask = pygame.mask.from_surface(self.image)
 
     def update(self):
         self.rect.x -= 10
         if self.rect.right < 0:
-            self.rect.x = largura + randint(500, 900)
-            self.rect.bottom = altura - 16
+            self.rect.x = largura + randint(200, 600)
+            self.rect.bottom = altura - 15
 
 
 # ===== Loop Principal =====
-def main(skin_escolhida=0): # Recebe o argumento para evitar o erro TypeError
+def main(skin_escolhida=0):
     
-    # Reinicia configurações de tela
     tela = pygame.display.set_mode((largura, altura))
     pygame.display.set_caption("Screaming Chicken")
     
@@ -182,14 +186,14 @@ def main(skin_escolhida=0): # Recebe o argumento para evitar o erro TypeError
 
     # Carrega Música
     try:
-        caminho_musica = os.path.join(diretorio_sons, "FaseUm.mp3") # Usando diretorio_sons que definimos lá em cima
+        caminho_musica = os.path.join(diretorio_sons, "FaseUm.mp3")
         pygame.mixer.music.load(caminho_musica)
         pygame.mixer.music.set_volume(1) 
         pygame.mixer.music.play(-1) 
     except Exception as e:
         print(f"Erro música: {e}")
 
-    # Carrega Fundo
+    # Carrega Fundo Inicial
     img_fundo = 1 
     try:
         caminho_fundo = os.path.join(diretorio_imagens, "FundoUm.jpeg")
@@ -201,9 +205,9 @@ def main(skin_escolhida=0): # Recebe o argumento para evitar o erro TypeError
     
     # Grupos
     todas_as_sprites = pygame.sprite.Group()
+    obstaculos = pygame.sprite.Group()
 
     # --- CRIA A GALINHA ---
-    # Nota: No futuro, você usará 'skin_escolhida' aqui para decidir qual imagem carregar
     galinha = Galinha() 
     todas_as_sprites.add(galinha)
 
@@ -213,62 +217,60 @@ def main(skin_escolhida=0): # Recebe o argumento para evitar o erro TypeError
         todas_as_sprites.add(nuvem)  
 
     # Pisos
-    largura_piso = 150
+    largura_piso = 80
     num_pisos = math.ceil(largura * 2 / largura_piso)  
     for i in range(num_pisos):
         piso = Piso(i)
         todas_as_sprites.add(piso)
 
     # Obstáculos
-    obstaculos = pygame.sprite.Group()
-    posicoes_usadas = []
+    distancia_minima = 400 
 
     for i in range(3):
         indice = randint(0, 2)
         obst = Obstaculos(indice)
-        if i == 0:
-            obst.rect.x = largura + randint(300, 600)
-        else:
-            obst.rect.x = posicoes_usadas[-1] + randint(400, 700) 
-
+        obst.rect.x = largura + (i * distancia_minima) + randint(100, 300)
         obstaculos.add(obst)
         todas_as_sprites.add(obst)
-        posicoes_usadas.append(obst.rect.x)
 
     relogio = pygame.time.Clock()  
     inicio = datetime.now()
     
+    fundo_atual = fundo
+    fundo_proximo = None
+    alpha_fundo = 255
+    transicionando = False
     rodando = True
+
     while rodando:
         relogio.tick(30) 
         
-        # Desenha fundo
-        tela.blit(fundo, (0, 0))
+        # --- LÓGICA DE DESENHO DO FUNDO ---
+        tela.blit(fundo_atual, (0, 0)) 
+        
+        if transicionando and fundo_proximo:
+            alpha_fundo += 15
+            fundo_proximo.set_alpha(alpha_fundo)
+            tela.blit(fundo_proximo, (0, 0)) 
+            
+            if alpha_fundo >= 255:
+                fundo_atual = fundo_proximo
+                transicionando = False
 
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 exit()
-            
-            # Tecla ESC para voltar ao menu (opcional) ou fechar
-            # if event.type == KEYDOWN and event.key == K_ESCAPE:
-            #     rodando = False 
-
             if event.type == KEYDOWN:
                 if event.key == K_SPACE:
-                    if galinha.rect.y != galinha.pos_y_inicial:
-                        pass
-                    else:
+                    if galinha.rect.y >= galinha.pos_y_inicial - 10: # Pequena margem de erro
                         galinha.pular()
-        
-        todas_as_sprites.update()
-        todas_as_sprites.draw(tela)
-        
-        # Troca de Fundo (Timer)
+
+        # --- LÓGICA DE TROCA DE FUNDO ---
         fim = datetime.now()
         tempo_passado = (fim - inicio).seconds
-        if tempo_passado >= 3:
-            novo_fundo = None
+        
+        if tempo_passado >= 10 and not transicionando:
             if img_fundo == 1:
                 img_fundo = 2
                 nome_fundo = "FundoDois.jpeg"
@@ -280,12 +282,28 @@ def main(skin_escolhida=0): # Recebe o argumento para evitar o erro TypeError
                 nome_fundo = "FundoUm.jpeg"
             
             try:
-                fundo_original = pygame.image.load(os.path.join(diretorio_imagens, nome_fundo))
-                fundo = pygame.transform.scale(fundo_original, (largura, altura))
-            except: pass # Mantém o fundo anterior se der erro
+                caminho_fundo = os.path.join(diretorio_imagens, nome_fundo)
+                prox_img = pygame.image.load(caminho_fundo).convert()
+                fundo_proximo = pygame.transform.scale(prox_img, (largura, altura))
+                alpha_fundo = 0
+                transicionando = True
+            except: 
+                pass
             
             inicio = datetime.now() 
-                
+
+        # --- UPDATE ÚNICO ---
+        todas_as_sprites.update()
+
+        # --- LÓGICA DE COLISÃO ---
+        colisoes = pygame.sprite.spritecollide(galinha, obstaculos, False, pygame.sprite.collide_mask)
+
+        if colisoes:
+            print("GAME OVER! A galinha colidiu.")
+            rodando = False 
+
+        # --- DESENHO FINAL ---
+        todas_as_sprites.draw(tela)
         pygame.display.flip()
 
 if __name__ == "__main__":
