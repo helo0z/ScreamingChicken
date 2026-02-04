@@ -1,7 +1,7 @@
 import pygame
 import sys
 import os
-from main import main
+from main import main, carregar_recorde
 from opcoes import abrir_opcoes
 
 # --------- Configurações ---------
@@ -24,6 +24,7 @@ pygame.display.set_icon(icon)
 pygame.display.set_caption("Screaming Chicken")
 
 FONT_BUTTON = pygame.font.SysFont("comicsansms", 48, italic=True, bold=True)
+FONT_RECORD = pygame.font.SysFont("arial", 36, bold=True)
 
 tela = pygame.display.set_mode((largura, altura))
 
@@ -130,6 +131,10 @@ class Menu:
                         btn.check_click(mouse_pos)
 
             self.screen.blit(fundo, (0, 0))
+            recorde = carregar_recorde()
+            texto_recorde = FONT_RECORD.render(f"Recorde: {recorde}", True, WHITE)
+            self.screen.blit(texto_recorde, (20, 20))
+
 
             if self.animating_circle:
                 mask = pygame.Surface((largura, altura))
@@ -166,7 +171,6 @@ class Game:
             menu.skins_desbloqueadas = self.skins_desbloqueadas
             
             menu.run()
-            
             # 2. Quando o menu.run() termina (clicou em Play), salva as configs
             self.skin_escolhida = menu.skin_atual
             self.skins_desbloqueadas = menu.skins_desbloqueadas

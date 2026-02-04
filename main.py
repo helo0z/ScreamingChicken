@@ -19,6 +19,8 @@ altura = 720
 base_path = os.path.dirname(os.path.abspath(__file__))
 diretorio_imagens = os.path.join(base_path, "imagens")
 diretorio_sons = os.path.join(base_path, "audio")
+ARQUIVO_RECORDE = os.path.join(base_path, "record.txt")
+
 
 # ===== Cores =====
 WHITE = (255, 255, 255)
@@ -26,6 +28,17 @@ BLACK = (0, 0, 0)
 VERMELHO_ERRO = (255, 0, 0) # Para identificar se a imagem falhar
 
 # ===== CLASSES =====
+
+def carregar_recorde():
+    if not os.path.exists(ARQUIVO_RECORDE):
+        return 0
+    with open(ARQUIVO_RECORDE, "r") as f:
+        return int(f.read())
+
+def salvar_recorde(valor):
+    with open(ARQUIVO_RECORDE, "w") as f:
+        f.write(str(valor))
+
 
 class Galinha(pygame.sprite.Sprite):
     """Classe que representa a galinha animada."""
@@ -236,6 +249,9 @@ def main(skin_escolhida=0):
 
     relogio = pygame.time.Clock()  
     inicio = datetime.now()
+    pontos = 0
+    fonte_score = pygame.font.SysFont("arial", 32, bold=True)
+
     
     fundo_atual = fundo
     fundo_proximo = None
@@ -270,6 +286,7 @@ def main(skin_escolhida=0):
         # --- LÓGICA DE TROCA DE FUNDO ---
         fim = datetime.now()
         tempo_passado = (fim - inicio).seconds
+        pontos = tempo_passado
         
         if tempo_passado >= 10 and not transicionando:
             if img_fundo == 1:
@@ -291,7 +308,7 @@ def main(skin_escolhida=0):
             except: 
                 pass
             
-            inicio = datetime.now() 
+            inicio = datetime.now()
 
         # --- UPDATE ÚNICO ---
         todas_as_sprites.update()
@@ -301,6 +318,9 @@ def main(skin_escolhida=0):
 
         if colisoes:
             pygame.mixer.music.stop()
+            recorde_atual = carregar_recorde()
+            if pontos > recorde_atual:
+                salvar_recorde(pontos)
             escolha = tela_game_over(tela) # Aqui chamamos a nova tela
             
             if escolha == "retry":
@@ -311,6 +331,8 @@ def main(skin_escolhida=0):
 
         # --- DESENHO FINAL ---
         todas_as_sprites.draw(tela)
+        texto_score = fonte_score.render(f"Pontos: {pontos}", True, (255, 255, 255))
+        tela.blit(texto_score, (20, 20))
         pygame.display.flip()
 
 if __name__ == "__main__":
