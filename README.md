@@ -1,204 +1,180 @@
-# Documentação do Projeto: Screaming Chicken em Python com Pygame
+Documentação do Projeto: Screaming Chicken (Python + Pygame)
+1. Visão Geral
 
-## 1. Visão Geral
-**Tecnologia Utilizada:** Python + Pygame + sounddevice/pyaudio. <br>
-**Descrição:** Jogo runner controlado por voz onde o jogador emite sons para fazer uma galinha pular obstáculos, inspirado no Dino Game do Chrome.<br>
-**Objetivo:** Criar uma experiência interativa e divertida que utiliza reconhecimento de áudio simples para controle, com mecânicas de jogo acessíveis e potencial viral.
+Tecnologia Utilizada:
+Python 3 + Pygame + NumPy
 
-***
+Descrição:
+Screaming Chicken é um jogo runner 2D no estilo infinito, inspirado no Dino Game do Chrome, onde o jogador controla uma galinha estilizada que corre automaticamente e precisa pular obstáculos para sobreviver o máximo de tempo possível.
 
+Objetivo:
+Criar uma experiência simples, divertida e altamente viciante, com progressão contínua de dificuldade, mudanças visuais no cenário conforme o tempo de sobrevivência e elementos secretos (Easter Eggs) que incentivam a exploração e a curiosidade do jogador.
 
-## 2. Descrição do Projeto
-### O que é Screaming Chicken? <br>
-Screaming Chicken é um jogo de plataforma runner 2D em que o personagem principal, uma galinha estilizada, corre automaticamente por um cenário horizontal repleto de obstáculos gerados de forma procedural. A principal inovação está no controle por voz: o jogador deve utilizar o microfone para emitir sons — como gritos, assobios ou qualquer ruído — para fazer a galinha pular e evitar colisões. A intensidade (volume) do som captado define a altura do salto, criando uma experiência interativa incomum que mistura jogabilidade clássica com controle vocal experimental.
+2. Descrição do Projeto
+2.1 O que é Screaming Chicken?
+Screaming Chicken é um jogo de plataforma runner 2D em que o personagem principal corre automaticamente por um cenário horizontal infinito, repleto de obstáculos gerados de forma processual.
+O jogador controla os saltos da galinha por meio de comandos tradicionais (teclado/mouse), focando em tempo de reação, ritmo e precisão.
+O tom do jogo é cartunesco, cômico e leve, com animações exageradas e progressão de dificuldade contínua, tornando-o ideal para jogadores casuais e sessões rápidas.
 
-A proposta combina simplicidade de jogabilidade com um elemento caótico e cômico, estimulando a curiosidade e o engajamento de jogadores casuais, streamers e públicos mais jovens.
+2.2 Funcionalidades Principais e Mecânicas de Jogo
+Movimentação e Progressão
+A galinha se move automaticamente da esquerda para a direita.
+A velocidade inicial é constante e aumenta gradualmente conforme o tempo de sobrevivência.
+O aumento de dificuldade segue uma progressão linear com limite máximo configurável.
+O jogo não possui fim definido (runner infinito).
+Cenário Dinâmico (Mudança por Tempo de Sobrevivência)
+O cenário muda automaticamente conforme o tempo de sobrevivência do jogador, inspirado no sistema do Dino Game do Chrome.
 
-### 2.1 Funcionalidades Principais e Mecânicas de Jogo
-* **Movimentação e Progressão:** <br>
-  * A galinha se move automaticamente da esquerda para a direita em uma velocidade constante inicial.
-  * A velocidade do deslocamento aumenta de forma incremental conforme o tempo de sobrevivência, intensificando o desafio gradualmente (aceleração linear com fator de limite máximo).
-  * O cenário é infinito, mas usa técnicas de looping visual e geração randômica de terreno para parecer variado e dinâmico. <br>
+Exemplos de variação:
+Fase inicial: cenário claro (dia).
+Após determinado tempo: transição para entardecer.
+Tempos avançados: cenário noturno, com mudanças de paleta, iluminação e elementos visuais.
+As transições são suaves, sem interromper a jogabilidade.
+As mudanças servem como feedback visual de progressão, aumentando a sensação de avanço e desafio.
 
-* **Obstáculos e Terreno:**
-  * Os obstáculos são posicionados com base em um algoritmo de geração procedural que considera distância mínima entre elementos, variedade visual e dificuldade crescente.
-  * Tipos de obstáculos:
-    * Cactos: altura média, exigem salto moderado.
-    * Cercas: mais baixas, surgem em sequência para dificultar múltiplos pulos.
-    * Pedras grandes: exigem pulos altos, surgem em velocidade mais avançada.
-  * Alguns obstáculos móveis poderão ser adicionados em modos alternativos (ex: corvos voando em altura variável). <br>
+Obstáculos e Terreno
+Obstáculos gerados de forma processual.
 
-* **Controle por Voz - Mecânica Central:**
-  * A detecção do som é feita com sounddevice, utilizando análise em tempo real de amostras de áudio.
-  * Cada frame coleta uma janela de som e calcula o RMS (root mean square) ou volume médio.
-  * O volume é mapeado para altura de pulo com três zonas:
-    * Silêncio / Ruído baixo: a galinha não pula.
-    * Volume médio: pulo baixo (~altura padrão).
-    * Volume alto: pulo alto (~pulo estendido).
-  * Um filtro de ruído com threshold configurável evita ativações involuntárias causadas por ruídos ambientes. <br>
+O algoritmo considera:
+Distância mínima entre obstáculos.
+Variedade visual.
+Aumento gradual da dificuldade.
 
-* **Sistema de Colisão e Game Over:**
-  * A colisão é detectada por bounding boxes entre a galinha e obstáculos.
-  * Ao colidir, o jogo entra no estado de Game Over, exibindo a pontuação, recorde e opção de reinício.
-  * A animação de colisão inclui som de impacto, desaceleração e queda da galinha. <br>
+Tipos de obstáculos:
+Cactos: altura média, exigem salto padrão.
+Cercas: mais baixas, surgem em sequência.
+Pedras grandes: exigem saltos mais precisos.
+Em estágios avançados, obstáculos móveis podem ser introduzidos.
 
-* **Pontuação e Progresso:**
-  * A pontuação é baseada na distância percorrida (tempo de sobrevivência).
-  * Recordes são armazenados localmente (com possibilidade futura de leaderboard online).
-  * Ao atingir marcos de distância, mensagens de incentivo podem ser exibidas (ex: "Você correu 500 metros!"). <br>
+Sistema de Colisão e Game Over
+Colisões baseadas em caixas delimitadoras (hitbox).
+Ao colidir:
+O jogo entra no estado de Game Over.
+Exibe pontuação atual e recorde.
+Oferece opção de reinício.
+Animações de impacto e desaceleração reforçam o feedback visual.
 
+Pontuação e Progresso
+Pontuação baseada no tempo de sobrevivência e distância percorrida.
+Recordes são armazenados localmente.
+Marcos importantes exibem mensagens de incentivo:
+Ex: “Você sobreviveu por 60 segundos!”
 
-### 2.2 Interfaces e Feedback Visual
-* **Tela de Jogo (HUD):** <br>
-  * Exibição constante da pontuação atual no canto superior esquerdo.
-  * Indicação visual do volume captado (barra de intensidade de som) — ajuda o jogador a calibrar a força do grito.
-  * Animações de pulo e colisão são fluídas, com uso de interpolação para representar melhor a física. <br>
+2.3 Interfaces e Feedback Visual
+HUD (Tela de Jogo)
+Pontuação atual exibida no canto superior da tela.
+Indicação visual clara do estado do jogo.
+Animações fluidas com interpolação simples para simular física.
 
-* **Telas do Jogo:** <br>
-  * **Menu Inicial:** opções de iniciar, configurações, skins e créditos.
-  * **Tela de Pausa:** opção de continuar, reiniciar ou sair.
-  * **Tela de Game Over:** mostra pontuação atual, recorde e botão de jogar novamente.
-  * **Tela de Configurações:** ajusta sensibilidade de microfone, volume de som, dificuldade inicial, etc.
-  * **Tela de Escolha de Personagem:** permite selecionar a skin da galinha antes de iniciar o jogo. <br>
-  
+Telas do Jogo
+Menu Inicial: iniciar jogo, opções, skins e créditos.
+Tela de Pausa: continuar, reiniciar ou sair.
+Tela de Game Over: pontuação atual, recorde e botão de jogar novamente.
+Tela de Opções: ajustes básicos de áudio, dificuldade inicial e preferências visuais.
+Tela de Skins: seleção de aparências da galinha.
 
-### 2.3 Modos de Jogo Alternativos (Extras)
-* **Modo "Desafio":** <br>
+2.4 Modos de Jogo Alternativos (Extras)
+Modo Desafio
+Obstáculos mais frequentes.
+Menor espaço entre eles.
+Pontuação dobrada.
+Fases com tempo limitado (ex: 30 segundos por fase).
 
-  * Obstáculos mais frequentes, menor espaço entre eles.
-  * Pontuação dobrada.  
-  * Tempo limitado por fase (ex: 30 segundos por fase com obstáculos customizados). <br>
+2.5 Sistema de Skins e Recompensas
+Skins desbloqueáveis ao atingir conquistas específicas:
+Sobreviver por determinado tempo.
+Alcançar distâncias específicas.
+Todas as skins são apenas estéticas, sem impacto na jogabilidade.
+Algumas skins são obtidas exclusivamente através de segredos do jogo (Easter Eggs).
 
+2.6 Easter Egg – Palavra Secreta
+Descrição
+O jogo possui um Easter Egg totalmente oculto, sem qualquer indicação explícita ao jogador.
+Como funciona
+O jogador deve:
+Acessar o Menu Principal.
+Entrar na opção “Opções”.
+Digitar uma palavra secreta (não revelada pelo jogo).
+Não há dicas diretas: o jogador precisa descobrir sozinho que o segredo existe e adivinhar a palavra correta.
 
-### 2.4 Sistema de Skins e Recompensas
-  * Desbloqueio de skins visuais para a galinha com base em achievements (ex: correr 1000 metros, sobreviver 3 minutos, etc.).
-  * Cada skin tem apenas efeito estético, sem impacto na jogabilidade.
-  * Skin especial desbloqueável via Easter Egg: Galinha Ninja (detalhado na seção 4.2). <br>
+Recompensa
+Ao acertar a palavra secreta:
+O jogador desbloqueia duas skins exclusivas gratuitamente.
+Uma mensagem especial confirma a descoberta do Easter Egg.
 
+Objetivo do Easter Egg
+Incentivar curiosidade.
+Estimular exploração dos menus.
+Criar um senso de mistério e recompensa para jogadores atentos.
 
-### 2.5 Aspectos de Design e Sonoplastia
-  * Trilha sonora leve e cômica, com loops curtos que não sobrecarregam a voz do jogador.
-  * Efeitos sonoros únicos para cada tipo de obstáculo (ex: barulho de cerca quebrando).
-  * Feedbacks auditivos positivos ao atingir marcos importantes (ex: voz da galinha comemorando).
-  * Visuais cartunescos e vibrantes, com animações exageradas para reforçar a comicidade da mecânica de voz. <br>
+2.7 Aspectos de Design e Sonoplastia
+Trilha sonora leve, com loops curtos.
+Efeitos sonoros distintos para:
+Saltos.
+Colisões.
+Desbloqueios e conquistas.
+Feedback sonoro especial ao desbloquear skins ou segredos.
+Estilo visual cartunesco, com cores vibrantes e animações exageradas.
 
+2.8 Mecânica de Dificuldade Progressiva
+A velocidade do jogo aumenta a cada intervalo de tempo definido.
+A frequência de obstáculos cresce conforme a sobrevivência.
+Após determinado tempo:
+Introdução de obstáculos mais complexos.
+Cenários mais escuros ou visualmente desafiadores.
 
-### 2.6 Mecânica de Dificuldade Progressiva
-  * Aumento linear de velocidade a cada 15 segundos.
-  * A cada 100 metros, chance de obstáculos duplos aumenta.
-  * Após certo tempo (ex: 60 segundos), obstáculos móveis começam a aparecer. <br>
-
-  
-### 2.7 Arquitetura do Código
-```
+2.9 Arquitetura do Código
 ScreamingChicken-main/
 ├── audio/                # Áudios do jogo
 │   ├── FaseUm.mp3
 │   ├── lobby.mp3
 │   └── pulo.mp3
 ├── core/
-│   └── game.py           # Ponto de entrada do jogo
+│   └── game.py           # Loop principal do jogo
 ├── imagens/              # Sprites e fundos
 │   ├── arbusto.png
 │   ├── chicken.png
-│   ├── chickenjanela.png
 │   ├── FundoUm.jpeg
 │   ├── menu.jpeg
 │   ├── nuvem.png
 │   └── piso.jpg
-├── main.py               # Lógica principal do jogo
+├── main.py               # Inicialização e lógica geral
 └── README.md
 
-```
+3. Etapas de Entrega
+Etapa 1 – Protótipo Básico (Semana 1–2)
+Configuração do ambiente.
+Estrutura inicial do projeto.
+Movimento básico da galinha.
+Geração simples de obstáculos.
 
+Etapa 2 – Lógica Principal (Semana 3–4)
+Sistema de colisões.
+Pontuação e progressão de dificuldade.
+Mudança dinâmica de cenário.
+Implementação do Game Over.
 
-## 3. Etapas de Entrega
-### **Etapa 1: Protótipo Básico (Semana 1-2)**
-* Configuração do ambiente de desenvolvimento.
-* Estrutura inicial do projeto.
-* Implementação básica do movimento da galinha.
-* Sistema simples de geração de obstáculos.
-* Captura básica de áudio do microfone. <br>
+Etapa 3 – Polimento (Semana 5)
+Menus e interfaces.
+Efeitos sonoros e visuais.
+Sistema de skins.
+Implementação do Easter Egg.
 
-### **Etapa 2: Lógica Principal (Semana 3-4)**
-* Controle refinado por voz.
-* Sistema completo de colisões.
-* Pontuação e aumento progressivo de dificuldade.
-* Geração procedural melhorada de obstáculos.
-* Implementação do game over. <br>
+Etapa 4 – Testes e Finalização (Semana 6)
+Testes de desempenho.
+Ajustes de balanceamento.
+Correção de bugs.
+Documentação final e empacotamento.
 
-### **Etapa 3: Polimento (Semana 5)**
-* Menu inicial e telas auxiliares.
-* Efeitos sonoros e visuais.
-* Sistema de recordes.
-* Opções de configuração.
-* Balanceamento de dificuldade. <br>
+4. Requisitos Técnicos
+4.1 Dependências
+Python 3.10+
+pygame==2.5.2
+numpy==1.26.0
+Instalação:
+pip install pygame==2.5.2 numpy==1.26.0
 
-### **Etapa 4: Testes e Finalização (Semana 6)**
-* Testes com diferentes dispositivos de áudio.
-* Otimização de performance.
-* Correção de bugs.
-* Documentação final.
-* Empacotamento para distribuição.
-
-
-## 4. Requisitos Técnicos
-### 4.1 Dependências
-Python 3.10+<br>
-pygame==2.5.2 <br>
-sounddevice==0.4.6 <br>
-numpy==1.26.0 <br>
-
-**Instalação recomendada:**
-```
-bash
-pip install pygame==2.5.2 sounddevice==0.4.6 numpy==1.26.0
-```
-
-
-### 4.2 Easter Egg: Galinha Ninja
-**Como ativar:**
-  1. Pular no mínimo 7 vezes consecutivas sem colidir
-  2. No 7º pulo, clicar com o botão direito do mouse <br>
-
-**Efeito:**
-Transformação visual em galinha ninja
-Invulnerabilidade temporária (5 segundos)
-Efeitos sonoros especiais. <br>
-**Implementação:**
-Python <br>
-
-```
-class Player:
-    def __init__(self):
-        self.consecutive_jumps = 0
-        
-    def jump(self):
-        self.consecutive_jumps += 1
-        if self.consecutive_jumps == 7:
-            self.check_ninja_egg()
-            
-    def check_ninja_egg(self):
-        if pygame.mouse.get_pressed()[2]:  # Botão direito
-            self.activate_ninja_mode()
-            
-    def activate_ninja_mode(self):
-        # Implementação dos efeitos especiais
-        pass
-```
-
-
-### 4.3 Testes e Validação
-  * Testes com microfones de diferentes qualidades.
-  * Avaliação de falsos positivos com ruído ambiente.
-  * Medição de tempo de resposta entre som e pulo. <br>
-
-### 4.4 Desafios Técnicos
-  * Latência na detecção de áudio em alguns sistemas.
-  * Otimização do consumo de CPU com Pygame + stream de som.
-  * Equilíbrio entre sensibilidade e ruído ambiente. <br>
-
-  
-## 5. Considerações Finais
-O projeto será desenvolvido de forma iterativa, com testes constantes para garantir uma experiência de jogo estável, fluida e divertida. A introdução do Ovo de Páscoa traz um toque de surpresa, incentivando a curiosidade e a exploração por parte do jogador.
-Este documento será atualizado conforme o avanço do desenvolvimento, refletindo eventuais ajustes, melhorias e decisões tomadas ao longo do processo.
+5. Considerações Finais
+Screaming Chicken aposta em simplicidade, progressão visual clara e elementos secretos para criar uma experiência divertida e rejogável.
+A mudança dinâmica de cenário reforça a sensação de evolução, enquanto o Easter Egg secreto adiciona profundidade e engajamento para jogadores mais curiosos.
+O documento será atualizado conforme o desenvolvimento evoluir, refletindo ajustes técnicos, criativos e de balanceamento.
