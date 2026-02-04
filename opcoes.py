@@ -18,16 +18,36 @@ def carregar_imagens(largura, altura):
     try:
         fundo = pygame.image.load(os.path.join(path_imagens, "FundoUm.jpeg"))
         imagens['fundo'] = pygame.transform.scale(fundo, (largura, altura))
-        
-        galinha = pygame.image.load(os.path.join(path_imagens, "galinha1.png")).convert_alpha()
-        imagens['galinha'] = pygame.transform.scale(galinha, (128, 128))
+
+        # Skins
+        imagens['galinha'] = pygame.transform.scale(
+            pygame.image.load(os.path.join(path_imagens, "galinha1.png")).convert_alpha(),
+            (128, 128)
+        )
+
+        imagens['cangaceiro'] = pygame.transform.scale(
+            pygame.image.load(os.path.join(path_imagens, "cangaceiro.png")).convert_alpha(),
+            (128, 128)
+        )
+
+        imagens['galocornio'] = pygame.transform.scale(
+            pygame.image.load(os.path.join(path_imagens, "galocornio.png")).convert_alpha(),
+            (128, 128)
+        )
+
     except Exception as e:
         print(f"Erro imagens: {e}")
         imagens['fundo'] = pygame.Surface((largura, altura))
         imagens['fundo'].fill((0, 100, 0))
+
         imagens['galinha'] = pygame.Surface((128, 128))
         imagens['galinha'].fill(BRANCO)
+
+        imagens['cangaceiro'] = imagens['galinha']
+        imagens['galocornio'] = imagens['galinha']
+
     return imagens
+
 
 def aplicar_filtro_cor(imagem, cor_filtro):
     img_copia = imagem.copy()
@@ -92,15 +112,13 @@ def abrir_opcoes(tela, skin_atual, ja_desbloqueado):
     # 0: Original
     skin_original = imgs['galinha']
     
-    # 1: Cangaceiro (Laranja/Marrom)
-    skin_cangaceiro = aplicar_filtro_cor(imgs['galinha'], (210, 105, 30, 150))
-    
-    # 2: Unicórnio (Rosa)
-    skin_unicornio = aplicar_filtro_cor(imgs['galinha'], (255, 105, 180, 150))
-    
+    skin_original = imgs['galinha']
+    skin_cangaceiro = imgs['cangaceiro']
+    skin_unicornio = imgs['galocornio']
+
     clock = pygame.time.Clock()
     rodando_opcoes = True
-    
+        
     nova_skin = skin_atual
     desbloqueado = ja_desbloqueado
     texto_codigo = ""
@@ -183,7 +201,7 @@ def abrir_opcoes(tela, skin_atual, ja_desbloqueado):
             desenhar_input_codigo(tela, texto_codigo, largura//2 - 150, altura//2 - 25)
             
             fonte_aviso = pygame.font.SysFont("arial", 20, italic=True)
-            aviso = fonte_aviso.render("Digite 'OVO' para liberar o galinheiro secreto", True, (200, 200, 200))
+            aviso = fonte_aviso.render("Digite a palavra chave para liberar o galinheiro secreto", True, (200, 200, 200))
             rect_aviso = aviso.get_rect(center=(largura//2, altura//2 + 50))
             tela.blit(aviso, rect_aviso)
 
