@@ -5,6 +5,7 @@ import os
 from random import randrange, randint
 import math
 from datetime import datetime
+from gameover import tela_game_over
 
 # ===== Inicialização =====
 pygame.init()
@@ -299,8 +300,14 @@ def main(skin_escolhida=0):
         colisoes = pygame.sprite.spritecollide(galinha, obstaculos, False, pygame.sprite.collide_mask)
 
         if colisoes:
-            print("GAME OVER! A galinha colidiu.")
-            rodando = False 
+            pygame.mixer.music.stop()
+            escolha = tela_game_over(tela) # Aqui chamamos a nova tela
+            
+            if escolha == "retry":
+                main(skin_escolhida) # Reinicia a fase
+                return 
+            else:
+                return # Volta para o menu (game.py)
 
         # --- DESENHO FINAL ---
         todas_as_sprites.draw(tela)

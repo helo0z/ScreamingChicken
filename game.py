@@ -155,13 +155,26 @@ class Game:
     def __init__(self):
         self.screen = pygame.display.set_mode((largura, altura))
         self.skin_escolhida = 0 
+        self.skins_desbloqueadas = False
 
     def run(self):
-        menu = Menu(self.screen)
-        menu.run()
-        self.skin_escolhida = menu.skin_atual
-        self.game_loop()
-
+        while True: # Loop mestre do aplicativo
+            # 1. Abre o Menu
+            menu = Menu(self.screen)
+            # Passa o estado atual das skins para o menu não resetar
+            menu.skin_atual = self.skin_escolhida
+            menu.skins_desbloqueadas = self.skins_desbloqueadas
+            
+            menu.run()
+            
+            # 2. Quando o menu.run() termina (clicou em Play), salva as configs
+            self.skin_escolhida = menu.skin_atual
+            self.skins_desbloqueadas = menu.skins_desbloqueadas
+            
+            # 3. Inicia o Jogo
+            # O jogo vai rodar até o jogador morrer e escolher "Menu" ou fechar
+            self.game_loop()
+            
     def game_loop(self):
         main(self.skin_escolhida)
 
